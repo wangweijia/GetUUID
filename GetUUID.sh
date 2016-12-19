@@ -1,18 +1,28 @@
 #!/bin/bash
 # security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/UPPER_CASE_UDID_HERE.mobileprovision
 
-# echo $1
-# echo $2
+RULE="GetUUID [-n \"Name\"]"
+
+if [[ $1 != "-n" ]]; then
+    echo $RULE
+    exit 1
+fi
+
+if [[ $2 == "" ]]; then
+    echo $RULE
+    exit 1
+fi
+
 filelist=`ls ~/Library/MobileDevice/Provisioning\ Profiles`
 TEMPFILE=/private/tmp/pTemp.plist
 NOWDATE=`date +%d`
 
 CREATETIME=0
-UUID=0
+UUID=""
 
 for file in $filelist
 do
-    security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/${file} >> ${TEMPFILE}
+    security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/${file} > ${TEMPFILE} 2>/dev/null
     Name=`/usr/libexec/PlistBuddy -c "print Name" ${TEMPFILE}`
 
     if [ "$Name" = "$2" ]; then
